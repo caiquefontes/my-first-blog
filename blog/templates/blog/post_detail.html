@@ -3,32 +3,52 @@
 
 
 {% block content %}
-    <div class="post">
+    <div class="container-fluid post">
 
         {% if post.published_date %}
-            <div class="date">
-                {{ post.published_date }}
+            <div class="date row" style="padding-left: 15px; color: #aaa; margin-bottom: 10px;">
+                <small>{{ post.published_date }}</small>
             </div>
         {% endif %}
-         
-        <div class="actions pull-right">
-            {% if not post.published_date %}
-                <form action="{% url 'blog:post_publish' pk=post.pk %}" method="POST" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-default">
-                        <i class="fa fa-paper-plane" aria-hidden="true"></i> Publish
-                    </button>
-                </form>
-            {% endif %}
 
-            {% if user.is_authenticated %}
-                <a class="btn btn-default" href="{% url 'blog:post_edit' pk=post.pk %}">
-                    '<span class="glyphicon glyphicon-pencil"></span>'
-                </a>
-            {% endif %}
+        <div class="row" style="margin-bottom: 20px; display: flex; align-items: center;">
+            
+            <div class="col-xs-12 col-sm-8">
+                <h2 style="margin-top: 0;">{{ post.title }}</h2>
+            </div>
+
+            <div class="col-xs-12 col-sm-4 text-right">
+                {% if user.is_authenticated %}
+                    <div class="actions" style="display: inline-block;">
+                        
+                        {% if not post.published_date %}
+                            <form action="{% url 'blog:post_publish' pk=post.pk %}" method="POST" class="form-inline" style="display: inline-block; margin-bottom: 0;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-default">
+                                    Publish
+                                </button>
+                            </form>
+                        {% endif %}
+
+                        <a class="btn btn-default" href="{% url 'blog:post_edit' pk=post.pk %}">
+                            .<span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+
+                        <form action="{% url 'blog:post_remove' pk=post.pk %}" method="POST" class="form-inline" style="display: inline-block; margin-bottom: 0;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-default">
+                                .<span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+            
+        </div> <div class="row">
+            <div class="col-xs-12">
+                <p>{{ post.text|linebreaksbr }}</p>
+            </div>
         </div>
 
-        <h2>{{ post.title }}</h2>
-        <p>{{ post.text|linebreaksbr }}</p>
     </div>
 {% endblock %}
